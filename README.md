@@ -21,10 +21,7 @@ git clone git@github.com:halo-dev/plugin-sitemap.git
 git clone git@github.com:{your_github_id}/plugin-sitemap.git
 ```
 
-```bash
-cd path/to/plugin-sitemap
-```
-
+## 发布:
 ```bash
 ./gradlew build
 ```
