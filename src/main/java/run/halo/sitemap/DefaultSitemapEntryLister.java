@@ -18,6 +18,8 @@ import run.halo.app.extension.ConfigMap;
 import run.halo.app.extension.ExtensionOperator;
 import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.infra.utils.JsonUtils;
+import run.halo.sitemap.dto.UrlEntryMeta;
+import run.halo.sitemap.vo.SitemapEntry;
 
 @Component
 @AllArgsConstructor
@@ -31,9 +33,15 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 listCategoryUrls(),
                 listTagUrls(),
                 listSinglePageUrls(),
-                urlsForListPages())
+                urlsForListPages(),
+                listHomeUrls())
             .distinct()
             .map(options::transform);
+    }
+
+    //增加主页
+    private Flux<UrlEntryMeta> listHomeUrls() {
+        return Flux.just(new UrlEntryMeta("/",1.0,ChangeFreqEnum.DAILY));
     }
 
     private Flux<UrlEntryMeta> listPostUrls() {
@@ -41,7 +49,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     && Post.VisibleEnum.PUBLIC.equals(post.getSpec().getVisible()),
                 defaultComparator())
             .map(Post::getStatusOrDefault)
-            .map(status -> new UrlEntryMeta(status.getPermalink())
+            .map(status -> new UrlEntryMeta(status.getPermalink(),0.8,ChangeFreqEnum.MONTHLY)
                 .setLastModifiedTime(status.getLastModifyTime())
             );
     }
@@ -59,7 +67,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     && Post.VisibleEnum.PUBLIC.equals(singlePage.getSpec().getVisible()),
                 pageDefaultComparator())
             .map(SinglePage::getStatusOrDefault)
-            .map(status -> new UrlEntryMeta(status.getPermalink())
+            .map(status -> new UrlEntryMeta(status.getPermalink(),0.6,ChangeFreqEnum.WEEKLY)
                 .setLastModifiedTime(status.getLastModifyTime())
             );
     }
@@ -76,7 +84,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 category -> category.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
             .map(Category::getStatusOrDefault)
-            .map(status -> new UrlEntryMeta(status.getPermalink()));
+            .map(status -> new UrlEntryMeta(status.getPermalink(),0.7,ChangeFreqEnum.DAILY));
     }
 
     private Flux<UrlEntryMeta> listTagUrls() {
@@ -84,7 +92,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 tag -> tag.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
             .map(Tag::getStatusOrDefault)
-            .map(status -> new UrlEntryMeta(status.getPermalink()));
+            .map(status -> new UrlEntryMeta(status.getPermalink(),0.5,ChangeFreqEnum.DAILY));
     }
 
     private Flux<UrlEntryMeta> urlsForListPages() {
@@ -101,7 +109,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 );
             })
             .flatMapMany(Flux::fromIterable)
-            .map(url -> new UrlEntryMeta(url).setPriority(0.5));
+            .map(url -> new UrlEntryMeta(url,0.3,ChangeFreqEnum.MONTHLY));
     }
 
     @Data

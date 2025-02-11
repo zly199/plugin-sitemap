@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import run.halo.app.infra.utils.PathUtils;
+import run.halo.sitemap.dto.UrlEntryMeta;
+import run.halo.sitemap.vo.SitemapEntry;
 
 /**
  * Sitemap generator options.
@@ -112,6 +114,16 @@ public class SitemapGeneratorOptions {
                 W3cDatetimeFormat.format(context.getLastModifiedTime(), dateTimeFormatter));
         } else {
             builder.lastmod(W3cDatetimeFormat.format(Instant.now(), dateTimeFormatter));
+        }
+
+        // Add images
+        if (context.getImages() != null && !context.getImages().isEmpty()) {
+            builder.images(context.getImages());
+        }
+
+        // Add videos
+        if (context.getVideos() != null && !context.getVideos().isEmpty()) {
+            builder.videos(context.getVideos());
         }
 
         return builder.build();

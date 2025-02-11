@@ -1,8 +1,9 @@
-package run.halo.sitemap;
+package run.halo.sitemap.vo;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
+import run.halo.sitemap.ChangeFreqEnum;
+import java.util.List;
 
 /**
  * @author guqing
@@ -22,4 +23,9 @@ public class SitemapEntry {
     private ChangeFreqEnum changefreq;
 
     private Double priority;
+
+    private List<SitemapImage> images; // 图片信息列表
+
+    private List<SitemapVideo> videos; // 视频信息列表
+
 }

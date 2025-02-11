@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import run.halo.sitemap.vo.SitemapEntry;
 
 /**
  * Builder class to generate xml for sitemap.

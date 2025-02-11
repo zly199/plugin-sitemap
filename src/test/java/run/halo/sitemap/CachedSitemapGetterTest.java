@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
+import run.halo.sitemap.vo.SitemapEntry;
 
 @ExtendWith(MockitoExtension.class)
 public class CachedSitemapGetterTest {
