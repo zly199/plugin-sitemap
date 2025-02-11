@@ -20,6 +20,8 @@ import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.infra.utils.JsonUtils;
 import run.halo.sitemap.dto.UrlEntryMeta;
 import run.halo.sitemap.vo.SitemapEntry;
+import run.halo.sitemap.vo.SitemapImage;
+import run.halo.sitemap.vo.SitemapVideo;
 
 @Component
 @AllArgsConstructor
@@ -48,9 +50,25 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
         return client.list(Post.class, post -> post.isPublished() && !post.isDeleted()
                     && Post.VisibleEnum.PUBLIC.equals(post.getSpec().getVisible()),
                 defaultComparator())
-            .map(Post::getStatusOrDefault)
-            .map(status -> new UrlEntryMeta(status.getPermalink(),0.8,ChangeFreqEnum.MONTHLY)
-                .setLastModifiedTime(status.getLastModifyTime())
+            .map(post -> {
+                var status = post.getStatusOrDefault();
+                UrlEntryMeta urlEntryMeta =
+                    new UrlEntryMeta(status.getPermalink(), 0.8, ChangeFreqEnum.MONTHLY)
+                        .setLastModifiedTime(status.getLastModifyTime());
+                String imgUrl = post.getMetadata().getAnnotations().getOrDefault("mainUrl", "");
+                String videoUrl = post.getMetadata().getAnnotations().getOrDefault("coverGIf", "");
+                if (StringUtils.isNotBlank(imgUrl)) {
+                    urlEntryMeta.getImages().add(new SitemapImage(imgUrl, post.getSpec().getTitle(), post.getSpec().getTitle()));
+                }
+                if (StringUtils.isNotBlank(videoUrl)) {
+                    urlEntryMeta.getVideos().add(
+                        new SitemapVideo(post.getSpec().getCover(), post.getSpec().getTitle(), post.getSpec().getTitle(),
+                            videoUrl, Instant.now().toString()));
+                }
+
+                return urlEntryMeta;
+
+                }
             );
     }
 

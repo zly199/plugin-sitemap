@@ -2,6 +2,7 @@ package run.halo.sitemap.dto;
 
 import io.micrometer.common.util.StringUtils;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -22,9 +23,9 @@ public class UrlEntryMeta {
 
     private Instant lastModifiedTime;
 
-    private List<SitemapImage> images; // 图片信息列表
+    private List<SitemapImage> images = new ArrayList<>(); // 图片信息列表
 
-    private List<SitemapVideo> videos; // 视频信息列表
+    private List<SitemapVideo> videos = new ArrayList<>(); // 视频信息列表
 
     private ChangeFreqEnum changefreq;
 

@@ -109,6 +109,10 @@ public class SitemapGeneratorOptions {
             builder.priority(priority);
         }
 
+        if (context.getChangefreq() != null) {
+            builder.changefreq(context.getChangefreq());
+        }
+
         if (context.getLastModifiedTime() != null) {
             builder.lastmod(
                 W3cDatetimeFormat.format(context.getLastModifiedTime(), dateTimeFormatter));
