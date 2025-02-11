@@ -119,6 +119,7 @@ public class SitemapGeneratorOptions {
         } else {
             builder.lastmod(W3cDatetimeFormat.format(Instant.now(), dateTimeFormatter));
         }
+        checkAndRemoveImagesAndVideo(context);
 
         // Add images
         if (context.getImages() != null && !context.getImages().isEmpty()) {
@@ -132,6 +133,18 @@ public class SitemapGeneratorOptions {
 
         return builder.build();
     }
+
+    private void checkAndRemoveImagesAndVideo(UrlEntryMeta context) {
+        //过滤掉无效url
+        if (context.getImages() != null && !context.getImages().isEmpty()) {
+            context.getImages().removeIf(image -> !PathUtils.isAbsoluteUri(image.getLoc()));
+        }
+        if (context.getVideos() != null && !context.getVideos().isEmpty()) {
+            context.getVideos().removeIf(video -> !PathUtils.isAbsoluteUri(video.getThumbnailLoc()));
+        }
+    }
+
+
 
     private URI getSiteUri() {
         try {
